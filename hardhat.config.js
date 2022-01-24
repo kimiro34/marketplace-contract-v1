@@ -2,6 +2,7 @@ require("dotenv").config();
 
 require("@nomiclabs/hardhat-etherscan");
 require("@nomiclabs/hardhat-waffle");
+require("@nomiclabs/hardhat-ganache");
 require("hardhat-gas-reporter");
 require("solidity-coverage");
 
@@ -22,12 +23,30 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
  * @type import('hardhat/config').HardhatUserConfig
  */
 module.exports = {
-  solidity: "0.8.4",
+  solidity: "0.8.7",
   networks: {
     ropsten: {
       url: process.env.ROPSTEN_URL || "",
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+    },
+    znxtestnet: {
+      url: process.env.ZNX_TESTNET || "",
+      accounts: process.env["MNEMONIC"]
+        ? {
+            mnemonic: process.env["MNEMONIC"]
+              ? process.env["MNEMONIC"].replace(/,/g, " ")
+              : "test test test test test test test test test test test junk",
+
+            initialIndex: 0,
+            count: 10,
+            path: `m/44'/60'/0'/0`,
+          }
+        : [
+            process.env["PRIVATE_KEY"]
+              ? process.env["PRIVATE_KEY"]
+              : "0x12345678911111111111111111111111111111111111111111111111111111",
+          ],
     },
   },
   gasReporter: {
