@@ -1,30 +1,43 @@
-// We require the Hardhat Runtime Environment explicitly here. This is optional
-// but useful for running the script in a standalone fashion through `node <script>`.
-//
-// When running the script with `npx hardhat run <script>` you'll find the Hardhat
-// Runtime Environment's members available in the global scope.
-const hre = require("hardhat");
+const { ethers } = require("hardhat");
+require("dotenv").config();
 
+const NETWORKS = {
+  ZNX_TESTNET: "ZNX_TESTNET",
+};
+
+const UCC = {
+  ZNX_TESTNET: "0x00F40F0014713f527E3e9ABa89aB45adaD0DfCe1",
+};
+
+const OWNER_CUT_PER_MILLION = 25000;
+
+/**
+ * @dev Steps:
+ * Deploy the Collection implementation
+ * Deploy the committee with the desired members. The owner will be the DAO bridge
+ * Deploy the collection Manager. The owner will be the DAO bridge
+ * Deploy the forwarder. Caller Is the collection manager.
+ * Deploy the collection Factory. Owner is the forwarder.
+ */
 async function main() {
-  // Hardhat always runs the compile task when running scripts with its command
-  // line interface.
-  //
-  // If this script is run directly using `node` you may want to call compile
-  // manually to make sure everything is compiled
-  // await hre.run('compile');
+  const owner = process.env["OWNER"];
 
-  // We get the contract to deploy
-  const Greeter = await hre.ethers.getContractFactory("Greeter");
-  const greeter = await Greeter.deploy("Hello, Hardhat!");
+  // Deploy collection marketplace
+  let acceptedToken = UCC["ZNX_TESTNET"];
 
-  await greeter.deployed();
+  const Marketplace = await ethers.getContractFactory("Marketplace");
+  const marketplace = await Marketplace.deploy(
+    acceptedToken,
+    OWNER_CUT_PER_MILLION,
+    owner
+  );
 
-  console.log("Greeter deployed to:", greeter.address);
+  console.log("NFT Marketplace:", marketplace.address);
 }
 
-// We recommend this pattern to be able to use async/await everywhere
-// and properly handle errors.
-main().catch((error) => {
-  console.error(error);
-  process.exitCode = 1;
-});
+main()
+  .then(() => process.exit(0))
+  .catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });
