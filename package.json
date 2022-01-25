@@ -6,7 +6,11 @@
     "commit-msg": "validate-commit-msg",
     "compile": "npx hardhat compile",
     "deploy-local": "npx hardhat run --network localhost scripts/deploy.js",
-    "deploy-znxtestnet": "npx hardhat run --network znxtestnet scripts/deploy.js"
+    "deploy-znxtestnet": "npx hardhat run --network znxtestnet scripts/deploy.js",
+    "deploy-local-royalty": "npx hardhat run --network localhost scripts/DeployRoyaltiesManager.js",
+    "deploy-znxtestnet-royalty": "npx hardhat run --network znxtestnet scripts/DeployRoyaltiesManager.js",
+    "deploy-local-v2": "npx hardhat run --network localhost scripts/deployMarketplaceV2.js",
+    "deploy-znxtestnet-v2": "npx hardhat run --network znxtestnet scripts/deployMarketplaceV2.js"
   },
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.4",
